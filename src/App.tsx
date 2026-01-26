@@ -1,15 +1,45 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
+import { Routes, Route } from 'react-router-dom';
+import MainLayout from './components/layout/MainLayout';
+import ProtectedRoute from './router/ProtectedRoute';
 
-function App() {
+import Page from './pages/Page';
+import HomePage from './pages/HomePage';
+
+export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<DashboardPage />} />
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="/" element={<HomePage />} />
+      <Route element={<MainLayout />}>
+        {/* ADMIN */}
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <Page title="User Management" />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* MANAGER */}
+        <Route
+          path="/manager/buildings"
+          element={
+            <ProtectedRoute allowedRoles={['MANAGER']}>
+              <Page title="My Buildings" />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* USER */}
+        <Route
+          path="/buildings"
+          element={
+            <ProtectedRoute allowedRoles={['USER', 'MANAGER', 'ADMIN']}>
+              <Page title="Buildings" />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
     </Routes>
   );
 }
-
-export default App;
