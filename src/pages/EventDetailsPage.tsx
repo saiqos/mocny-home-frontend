@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Chip, Button, Divider } from '@mui/material';
+import { Box, Typography, Button, Divider } from '@mui/material';
 import { useEventStore } from '../stores/eventStore';
 import { useAuthStore } from '../stores/authStore';
 

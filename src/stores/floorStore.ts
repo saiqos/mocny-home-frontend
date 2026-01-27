@@ -3,9 +3,10 @@ import type { Floor } from "../models/Floor";
 
 interface FloorState {
     floors: Floor[];
+    addFloor: (floor: Floor) => void;
 }
 
-export const useFloorStore = create<FloorState>(() => ({
+export const useFloorStore = create<FloorState>((set) => ({
     floors: [
         {
             id: "f1",
@@ -24,4 +25,9 @@ export const useFloorStore = create<FloorState>(() => ({
             architecturalBarriers: "Narrow corridor near room 105",
         },
     ],
+
+    addFloor: (floor) =>
+        set((state) => ({
+            floors: [...state.floors, floor],
+        })),
 }));

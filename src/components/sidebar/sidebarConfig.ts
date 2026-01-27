@@ -7,10 +7,8 @@ export const sidebarConfig: Record<Role, { label: string; path: string }[]> = {
         { label: "Events", path: "/events" },
     ],
     MANAGER: [
-        { label: "My Buildings", path: "/manager/buildings" },
-        { label: "Floors & Rooms", path: "/manager/structure" },
-        { label: "Sensors & Beacons", path: "/manager/devices" },
-        { label: "Events", path: "/manager/events" },
+        { label: "My Buildings", path: "/buildings" },
+        { label: "Events", path: "/events" },
     ],
     USER: [
         { label: "Buildings", path: "/buildings" },

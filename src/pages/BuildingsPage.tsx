@@ -8,6 +8,10 @@ import {
   Select,
   MenuItem,
   Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   TextField,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
@@ -30,9 +34,28 @@ export default function BuildingsPage() {
   const users = useUserStore((s) => s.users);
   const managers = users.filter((u) => u.role === 'MANAGER');
 
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editAddress, setEditAddress] = useState('');
+
+  const handleOpenEdit = (building: any) => {
+    setSelectedId(building.id);
+    setEditName(building.name);
+    setEditAddress(building.address);
+    setOpenEdit(true);
+  };
+
+  const handleSave = () => {
+    if (!selectedId) return;
+
+    updateBuilding(selectedId, {
+      name: editName,
+      address: editAddress,
+    });
+
+    setOpenEdit(false);
+  };
 
   return (
     <Box>
@@ -96,40 +119,6 @@ export default function BuildingsPage() {
                     </Select>
                   </Box>
                 )}
-
-                {editingId === building.id && (
-                  <Box sx={{ mt: 2 }}>
-                    <TextField
-                      size="small"
-                      label="Name"
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      sx={{ mt: 2 }}
-                    />
-
-                    <TextField
-                      size="small"
-                      label="Address"
-                      value={editAddress}
-                      onChange={(e) => setEditAddress(e.target.value)}
-                      sx={{ mt: 2 }}
-                    />
-
-                    <Button
-                      size="small"
-                      variant="contained"
-                      onClick={() => {
-                        updateBuilding(building.id, {
-                          name: editName,
-                          address: editAddress,
-                        });
-                        setEditingId(null);
-                      }}
-                    >
-                      Save
-                    </Button>
-                  </Box>
-                )}
               </CardContent>
 
               <CardActions>
@@ -144,11 +133,7 @@ export default function BuildingsPage() {
                   <>
                     <Button
                       size="small"
-                      onClick={() => {
-                        setEditingId(building.id);
-                        setEditName(building.name);
-                        setEditAddress(building.address);
-                      }}
+                      onClick={() => handleOpenEdit(building)}
                     >
                       Edit
                     </Button>
@@ -167,6 +152,33 @@ export default function BuildingsPage() {
           </Grid>
         ))}
       </Grid>
+
+      {/* EDIT MODAL */}
+      <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
+        <DialogTitle>Edit Building</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            label="Name"
+            margin="normal"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+          />
+          <TextField
+            fullWidth
+            label="Address"
+            margin="normal"
+            value={editAddress}
+            onChange={(e) => setEditAddress(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleSave}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

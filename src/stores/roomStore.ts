@@ -3,9 +3,11 @@ import type { Room } from "../models/Room";
 
 interface RoomState {
     rooms: Room[];
+    addRoom: (room: Room) => void;
+    updateRoom: (id: string, data: Partial<Room>) => void;
 }
 
-export const useRoomStore = create<RoomState>(() => ({
+export const useRoomStore = create<RoomState>((set) => ({
     rooms: [
         {
             id: "r1",
@@ -29,4 +31,16 @@ export const useRoomStore = create<RoomState>(() => ({
             description: "Large meeting room",
         },
     ],
+
+    addRoom: (room) =>
+        set((state) => ({
+            rooms: [...state.rooms, room],
+        })),
+
+    updateRoom: (id, data) =>
+        set((state) => ({
+            rooms: state.rooms.map((r) =>
+                r.id === id ? { ...r, ...data } : r
+            ),
+        })),
 }));
