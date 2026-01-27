@@ -9,11 +9,9 @@ import {
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { useEventStore } from '../stores/eventStore';
-import { useAuthStore } from '../stores/authStore';
 
 export default function EventsPage() {
   const events = useEventStore((s) => s.events);
-  const role = useAuthStore((s) => s.role);
   const navigate = useNavigate();
 
   return (
