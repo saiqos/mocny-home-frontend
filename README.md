@@ -1,5 +1,6 @@
 # Frontend: React + TypeScript + Vite
 # Backend: C# ASP.NET Core 
+# DEMO deployed on Vercel - [link](https://mocny-home-frontend-git-main-saiqos-projects.vercel.app/login)
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
