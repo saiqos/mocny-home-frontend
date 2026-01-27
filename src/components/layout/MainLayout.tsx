@@ -1,39 +1,72 @@
-import { Box, AppBar, Toolbar, Typography, Button } from '@mui/material';
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useState } from 'react';
 import Sidebar from '../sidebar/Sidebar';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
-import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
 
 export default function MainLayout() {
   const logout = useAuthStore((s) => s.logout);
-  const navigate = useNavigate();
   const role = useAuthStore((s) => s.role);
+  const navigate = useNavigate();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {/* Sidebar */}
-      <Sidebar drawerWidth={drawerWidth} />
+      <Sidebar
+        drawerWidth={drawerWidth}
+        isMobile={isMobile}
+        mobileOpen={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+      />
 
-      {/* Main content */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-        }}
-      >
+      <Box component="main" sx={{ flexGrow: 1 }}>
         <AppBar
           position="fixed"
           sx={{
-            ml: `${drawerWidth}px`,
-            width: `calc(100% - ${drawerWidth}px)`,
+            ...(isMobile
+              ? {}
+              : {
+                  ml: `${drawerWidth}px`,
+                  width: `calc(100% - ${drawerWidth}px)`,
+                }),
           }}
         >
           <Toolbar>
-            <Typography variant="h6">
-              Building Management System — {role}
+            {isMobile && (
+              <IconButton
+                color="inherit"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2 }}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
+
+            <Typography variant="h6" noWrap>
+              BMS — {role}
             </Typography>
+
             <Button
               color="inherit"
               sx={{ ml: 'auto' }}
@@ -46,8 +79,10 @@ export default function MainLayout() {
             </Button>
           </Toolbar>
         </AppBar>
-        <Toolbar /> {/* отступ под AppBar */}
-        <Box sx={{ p: 3 }}>
+
+        <Toolbar />
+
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
           <Outlet />
         </Box>
       </Box>
