@@ -3,8 +3,8 @@ import type { Role } from "../../models/Role";
 export const sidebarConfig: Record<Role, { label: string; path: string }[]> = {
     ADMIN: [
         { label: "Users", path: "/admin/users" },
-        { label: "Buildings", path: "/admin/buildings" },
-        { label: "Events", path: "/admin/events" },
+        { label: "Buildings", path: "/buildings" },
+        { label: "Events", path: "/events" },
     ],
     MANAGER: [
         { label: "My Buildings", path: "/manager/buildings" },

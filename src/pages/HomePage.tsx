@@ -16,8 +16,8 @@ export default function HomePage() {
   const actions = {
     ADMIN: [
       { label: 'User Management', path: '/admin/users' },
-      { label: 'Buildings', path: '/admin/buildings' },
-      { label: 'Events Log', path: '/admin/events' },
+      { label: 'Buildings', path: '/buildings' },
+      { label: 'Events Log', path: '/events' },
     ],
     MANAGER: [
       { label: 'My Buildings', path: '/manager/buildings' },
