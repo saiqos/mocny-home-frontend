@@ -39,37 +39,46 @@ export default function MainLayout() {
         onClose={() => setMobileOpen(false)}
       />
 
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box component="main" sx={{ flexGrow: 1, minWidth: 0 }}>
         <AppBar
           position="fixed"
           sx={{
             ...(isMobile
-              ? {}
+              ? { width: '100%' }
               : {
                   ml: `${drawerWidth}px`,
                   width: `calc(100% - ${drawerWidth}px)`,
                 }),
           }}
         >
-          <Toolbar>
+          <Toolbar sx={{ display: 'flex' }}>
             {isMobile && (
               <IconButton
                 color="inherit"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{ mr: 2 }}
+                sx={{ mr: 1 }}
               >
                 <MenuIcon />
               </IconButton>
             )}
 
-            <Typography variant="h6" noWrap>
+            <Typography
+              variant="h6"
+              sx={{
+                flexGrow: 1,
+                minWidth: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
               BMS — {role}
             </Typography>
 
             <Button
               color="inherit"
-              sx={{ ml: 'auto' }}
+              sx={{ flexShrink: 0 }}
               onClick={() => {
                 logout();
                 navigate('/login');
