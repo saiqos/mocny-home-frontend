@@ -157,7 +157,7 @@ export default function FloorDetailsPage() {
                       setSelectedRoomId(room.id);
                       setName(room.nameOrNumber);
                       setOrder(String(room.orderOnFloor));
-                      setDescription(room.description);
+                      setDescription(room.description ?? '');
                       setOpenEdit(true);
                     }}
                   >
