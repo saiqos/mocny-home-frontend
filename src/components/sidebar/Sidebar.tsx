@@ -18,6 +18,8 @@ export default function Sidebar({ drawerWidth }: Props) {
   const navigate = useNavigate();
   const role = useAuthStore((s) => s.role);
 
+  const menuItems = role ? sidebarConfig[role] : [];
+
   return (
     <Drawer
       variant="permanent"
@@ -33,14 +35,13 @@ export default function Sidebar({ drawerWidth }: Props) {
       <Toolbar />
 
       <List>
-        {/* Home button */}
         <ListItemButton onClick={() => navigate('/')}>
           <ListItemText primary="Home" />
         </ListItemButton>
 
         <Divider sx={{ my: 1 }} />
 
-        {sidebarConfig[role].map((item) => (
+        {menuItems.map((item) => (
           <ListItemButton key={item.path} onClick={() => navigate(item.path)}>
             <ListItemText primary={item.label} />
           </ListItemButton>

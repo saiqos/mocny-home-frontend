@@ -7,21 +7,34 @@ import {
   Button,
   Divider,
   Chip,
+  TextField,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useBeaconStore } from '../stores/beaconStore';
 import { useSensorStore } from '../stores/sensorStore';
 import { useAuthStore } from '../stores/authStore';
+import { useState } from 'react';
 
 export default function DevicesPage() {
   const { buildingId } = useParams<{ buildingId: string }>();
   const role = useAuthStore((s) => s.role);
 
+  const [newBeaconId, setNewBeaconId] = useState('');
+  const [newBeaconLocation, setNewBeaconLocation] = useState('');
+
+  const [newSensorId, setNewSensorId] = useState('');
+  const [newSensorLocation, setNewSensorLocation] = useState('');
+
   const allBeacons = useBeaconStore((s) => s.beacons);
   const allSensors = useSensorStore((s) => s.sensors);
 
-  const beacons = allBeacons.filter((b) => b.buildingId === buildingId);
+  const addBeacon = useBeaconStore((s) => s.addBeacon);
+  const deleteBeacon = useBeaconStore((s) => s.deleteBeacon);
 
+  const addSensor = useSensorStore((s) => s.addSensor);
+  const deleteSensor = useSensorStore((s) => s.deleteSensor);
+
+  const beacons = allBeacons.filter((b) => b.buildingId === buildingId);
   const sensors = allSensors.filter((s) => s.buildingId === buildingId);
 
   return (
@@ -37,9 +50,42 @@ export default function DevicesPage() {
       </Typography>
 
       {role !== 'USER' && (
-        <Button variant="contained" sx={{ mb: 2 }}>
-          Add Beacon
-        </Button>
+        <>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField
+              size="small"
+              label="Beacon ID"
+              value={newBeaconId}
+              onChange={(e) => setNewBeaconId(e.target.value)}
+            />
+
+            <TextField
+              size="small"
+              label="Location"
+              value={newBeaconLocation}
+              onChange={(e) => setNewBeaconLocation(e.target.value)}
+            />
+          </Box>
+
+          <Button
+            variant="contained"
+            sx={{ mb: 2 }}
+            onClick={() => {
+              if (!newBeaconId) return;
+
+              addBeacon({
+                buildingId,
+                beaconId: newBeaconId,
+                locationDescription: newBeaconLocation,
+              });
+
+              setNewBeaconId('');
+              setNewBeaconLocation('');
+            }}
+          >
+            Add Beacon
+          </Button>
+        </>
       )}
 
       <Grid container spacing={2}>
@@ -53,8 +99,13 @@ export default function DevicesPage() {
                 </Typography>
 
                 {role !== 'USER' && (
-                  <Button size="small" sx={{ mt: 2 }}>
-                    Edit
+                  <Button
+                    size="small"
+                    color="error"
+                    sx={{ mt: 2 }}
+                    onClick={() => deleteBeacon(beacon.id)}
+                  >
+                    Delete
                   </Button>
                 )}
               </CardContent>
@@ -70,9 +121,42 @@ export default function DevicesPage() {
       </Typography>
 
       {role !== 'USER' && (
-        <Button variant="contained" sx={{ mb: 2 }}>
-          Add Sensor
-        </Button>
+        <>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField
+              size="small"
+              label="Sensor ID"
+              value={newSensorId}
+              onChange={(e) => setNewSensorId(e.target.value)}
+            />
+
+            <TextField
+              size="small"
+              label="Location"
+              value={newSensorLocation}
+              onChange={(e) => setNewSensorLocation(e.target.value)}
+            />
+          </Box>
+          <Button
+            variant="contained"
+            sx={{ mb: 2 }}
+            onClick={() => {
+              if (!newSensorId) return;
+
+              addSensor({
+                buildingId,
+                externalSensorId: newSensorId,
+                type: 'SMOKE_DETECTOR', // можешь потом сделать Select
+                locationDescription: newSensorLocation,
+              });
+
+              setNewSensorId('');
+              setNewSensorLocation('');
+            }}
+          >
+            Add Beacon
+          </Button>
+        </>
       )}
 
       <Grid container spacing={2}>
@@ -89,8 +173,13 @@ export default function DevicesPage() {
                 </Typography>
 
                 {role !== 'USER' && (
-                  <Button size="small" sx={{ mt: 2 }}>
-                    Edit
+                  <Button
+                    size="small"
+                    color="error"
+                    sx={{ mt: 2 }}
+                    onClick={() => deleteSensor(sensor.id)}
+                  >
+                    Delete
                   </Button>
                 )}
               </CardContent>

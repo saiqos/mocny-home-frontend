@@ -1,11 +1,11 @@
 import {
   Box,
   Typography,
-  Grid,
   Card,
   CardContent,
   CardActionArea,
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 
@@ -20,13 +20,13 @@ export default function HomePage() {
       { label: 'Events Log', path: '/events' },
     ],
     MANAGER: [
-      { label: 'My Buildings', path: '/manager/buildings' },
-      { label: 'Structure (Floors & Rooms)', path: '/manager/structure' },
-      { label: 'Devices', path: '/manager/devices' },
-      { label: 'Events', path: '/manager/events' },
+      { label: 'Buildings', path: '/buildings' },
+      { label: 'Events', path: '/events' },
     ],
     USER: [{ label: 'Buildings', path: '/buildings' }],
   };
+
+  const availableActions = role ? actions[role] : [];
 
   return (
     <Box>
@@ -35,12 +35,12 @@ export default function HomePage() {
       </Typography>
 
       <Typography variant="subtitle1" gutterBottom>
-        Your role: <strong>{role}</strong>
+        Your role: <strong>{role ?? '—'}</strong>
       </Typography>
 
       <Grid container spacing={2} sx={{ mt: 2 }}>
-        {actions[role].map((action) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={action.path}>
+        {availableActions.map((action) => (
+          <Grid key={action.path} size={{ xs: 12, sm: 6, md: 4 }}>
             <Card>
               <CardActionArea onClick={() => navigate(action.path)}>
                 <CardContent>

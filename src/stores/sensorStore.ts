@@ -3,9 +3,12 @@ import type { Sensor } from "../models/Sensor";
 
 interface SensorState {
     sensors: Sensor[];
+    addSensor: (beacon: Omit<Sensor, 'id'>) => void;
+    updateSensor: (id: string, data: Partial<Sensor>) => void;
+    deleteSensor: (id: string) => void;
 }
 
-export const useSensorStore = create<SensorState>(() => ({
+export const useSensorStore = create<SensorState>((set) => ({
     sensors: [
         {
             id: "s1",
@@ -22,4 +25,21 @@ export const useSensorStore = create<SensorState>(() => ({
             locationDescription: "Reception desk",
         },
     ],
+
+    addSensor: (beacon) =>
+        set((state) => ({
+            sensors: [...state.sensors, { ...beacon, id: crypto.randomUUID() }],
+        })),
+
+    updateSensor: (id, data) =>
+        set((state) => ({
+            sensors: state.sensors.map((b) =>
+                b.id === id ? { ...b, ...data } : b
+            ),
+        })),
+
+    deleteSensor: (id) =>
+        set((state) => ({
+            sensors: state.sensors.filter((b) => b.id !== id),
+        })),
 }));

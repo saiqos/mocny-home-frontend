@@ -5,22 +5,34 @@ import {
   CardContent,
   CardActions,
   Button,
+  Select,
+  MenuItem,
+  Chip,
+  TextField,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { useState } from 'react';
 import { useBuildingStore } from '../stores/buildingStore';
 import { useAuthStore } from '../stores/authStore';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../stores/userStore';
-import { Select, MenuItem, Chip, Box as MuiBox } from '@mui/material';
 
 export default function BuildingsPage() {
   const buildings = useBuildingStore((s) => s.buildings);
-  const role = useAuthStore((s) => s.role);
-  const navigate = useNavigate();
-  const users = useUserStore((s) => s.users);
-  const managers = users.filter((u) => u.role === 'MANAGER');
+  const updateBuilding = useBuildingStore((s) => s.updateBuilding);
+  const archiveBuilding = useBuildingStore((s) => s.archiveBuilding);
   const assignManager = useBuildingStore((s) => s.assignManager);
   const removeManager = useBuildingStore((s) => s.removeManager);
+
+  const role = useAuthStore((s) => s.role);
+  const navigate = useNavigate();
+
+  const users = useUserStore((s) => s.users);
+  const managers = users.filter((u) => u.role === 'MANAGER');
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editAddress, setEditAddress] = useState('');
 
   return (
     <Box>
@@ -40,8 +52,9 @@ export default function BuildingsPage() {
                 <Typography variant="body2" sx={{ mt: 1 }}>
                   {building.description}
                 </Typography>
+
                 {role === 'ADMIN' && (
-                  <MuiBox sx={{ mt: 2 }}>
+                  <Box sx={{ mt: 2 }}>
                     <Typography variant="subtitle2">Managers:</Typography>
 
                     {building.managerIds.map((managerId) => {
@@ -81,7 +94,41 @@ export default function BuildingsPage() {
                           </MenuItem>
                         ))}
                     </Select>
-                  </MuiBox>
+                  </Box>
+                )}
+
+                {editingId === building.id && (
+                  <Box sx={{ mt: 2 }}>
+                    <TextField
+                      size="small"
+                      label="Name"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      sx={{ mt: 2 }}
+                    />
+
+                    <TextField
+                      size="small"
+                      label="Address"
+                      value={editAddress}
+                      onChange={(e) => setEditAddress(e.target.value)}
+                      sx={{ mt: 2 }}
+                    />
+
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={() => {
+                        updateBuilding(building.id, {
+                          name: editName,
+                          address: editAddress,
+                        });
+                        setEditingId(null);
+                      }}
+                    >
+                      Save
+                    </Button>
+                  </Box>
                 )}
               </CardContent>
 
@@ -95,15 +142,25 @@ export default function BuildingsPage() {
 
                 {role === 'ADMIN' && (
                   <>
-                    <Button size="small">Edit</Button>
-                    <Button size="small" color="error">
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        setEditingId(building.id);
+                        setEditName(building.name);
+                        setEditAddress(building.address);
+                      }}
+                    >
+                      Edit
+                    </Button>
+
+                    <Button
+                      size="small"
+                      color="error"
+                      onClick={() => archiveBuilding(building.id)}
+                    >
                       Archive
                     </Button>
                   </>
-                )}
-
-                {role === 'MANAGER' && (
-                  <Button size="small">Manage Structure</Button>
                 )}
               </CardActions>
             </Card>

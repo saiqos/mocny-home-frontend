@@ -10,12 +10,21 @@ import EventsPage from './pages/EventsPage';
 import EventDetailsPage from './pages/EventDetailsPage';
 import DevicesPage from './pages/DevicesPage';
 import UsersPage from './pages/UsersPage';
+import LoginPage from './pages/LoginPage';
 
 export default function App() {
   return (
     <Routes>
+      <Route path="/login" element={<LoginPage />} />
       <Route element={<MainLayout />}>
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'USER']}>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/buildings"

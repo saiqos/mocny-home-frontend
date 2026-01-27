@@ -3,9 +3,12 @@ import type { Beacon } from "../models/Beacon";
 
 interface BeaconState {
     beacons: Beacon[];
+    addBeacon: (beacon: Omit<Beacon, 'id'>) => void;
+    updateBeacon: (id: string, data: Partial<Beacon>) => void;
+    deleteBeacon: (id: string) => void;
 }
 
-export const useBeaconStore = create<BeaconState>(() => ({
+export const useBeaconStore = create<BeaconState>((set) => ({
     beacons: [
         {
             id: "b1",
@@ -20,4 +23,22 @@ export const useBeaconStore = create<BeaconState>(() => ({
             locationDescription: "Near conference room",
         },
     ],
+
+    addBeacon: (beacon) =>
+        set((state) => ({
+            beacons: [...state.beacons, { ...beacon, id: crypto.randomUUID() }],
+        })),
+
+    updateBeacon: (id, data) =>
+        set((state) => ({
+            beacons: state.beacons.map((b) =>
+                b.id === id ? { ...b, ...data } : b
+            ),
+        })),
+
+    deleteBeacon: (id) =>
+        set((state) => ({
+            beacons: state.beacons.filter((b) => b.id !== id),
+        })),
+
 }));

@@ -5,6 +5,8 @@ interface BuildingState {
     buildings: Building[];
     assignManager: (buildingId: string, userId: string) => void;
     removeManager: (buildingId: string, userId: string) => void;
+    updateBuilding: (id: string, data: Partial<Building>) => void;
+    archiveBuilding: (id: string) => void;
 }
 
 export const useBuildingStore = create<BuildingState>((set) => ({
@@ -45,4 +47,17 @@ export const useBuildingStore = create<BuildingState>((set) => ({
                     : b
             ),
         })),
+
+    updateBuilding: (id, data) =>
+        set((state) => ({
+            buildings: state.buildings.map((b) =>
+                b.id === id ? { ...b, ...data } : b
+            ),
+        })),
+
+    archiveBuilding: (id) =>
+        set((state) => ({
+            buildings: state.buildings.filter((b) => b.id !== id),
+        })),
+
 }));
