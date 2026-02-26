@@ -33,7 +33,7 @@ export default function BuildingsPage() {
   const navigate = useNavigate();
 
   const users = useUserStore((s) => s.users);
-  const managers = users.filter((u) => u.role === 'MANAGER');
+  const managers = users.filter((u) => u.role === 'Manager');
 
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -77,7 +77,7 @@ export default function BuildingsPage() {
                   {building.description}
                 </Typography>
 
-                {role === 'ADMIN' && (
+                {role === 'Admin' && (
                   <Box sx={{ mt: 2 }}>
                     <Typography variant="subtitle2">Managers:</Typography>
 
@@ -130,7 +130,7 @@ export default function BuildingsPage() {
                   View
                 </Button>
 
-                {role === 'ADMIN' && (
+                {role === 'Admin' && (
                   <>
                     <Button
                       size="small"

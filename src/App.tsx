@@ -11,16 +11,35 @@ import EventDetailsPage from './pages/EventDetailsPage';
 import DevicesPage from './pages/DevicesPage';
 import UsersPage from './pages/UsersPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import GuestRoute from './router/GuestRoute';
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/login"
+        element={
+          <GuestRoute>
+            <LoginPage />
+          </GuestRoute>
+        }
+      />
+
+      <Route
+        path="/register"
+        element={
+          <GuestRoute>
+            <RegisterPage />
+          </GuestRoute>
+        }
+      />
+
       <Route element={<MainLayout />}>
         <Route
           path="/"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'USER']}>
+            <ProtectedRoute allowedRoles={['Admin', 'Manager', 'User']}>
               <HomePage />
             </ProtectedRoute>
           }
@@ -29,7 +48,7 @@ export default function App() {
         <Route
           path="/buildings"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'USER']}>
+            <ProtectedRoute allowedRoles={['Admin', 'Manager', 'User']}>
               <BuildingsPage />
             </ProtectedRoute>
           }
@@ -38,7 +57,7 @@ export default function App() {
         <Route
           path="/buildings/:buildingId"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'USER']}>
+            <ProtectedRoute allowedRoles={['Admin', 'Manager', 'User']}>
               <BuildingDetailsPage />
             </ProtectedRoute>
           }
@@ -47,7 +66,7 @@ export default function App() {
         <Route
           path="/buildings/:buildingId/floors/:floorId"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'USER']}>
+            <ProtectedRoute allowedRoles={['Admin', 'Manager', 'User']}>
               <FloorDetailsPage />
             </ProtectedRoute>
           }
@@ -56,7 +75,7 @@ export default function App() {
         <Route
           path="/buildings/:buildingId/devices"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'USER']}>
+            <ProtectedRoute allowedRoles={['Admin', 'Manager', 'User']}>
               <DevicesPage />
             </ProtectedRoute>
           }
@@ -65,7 +84,7 @@ export default function App() {
         <Route
           path="/events"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER']}>
+            <ProtectedRoute allowedRoles={['Admin', 'Manager']}>
               <EventsPage />
             </ProtectedRoute>
           }
@@ -74,7 +93,7 @@ export default function App() {
         <Route
           path="/events/:id"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER']}>
+            <ProtectedRoute allowedRoles={['Admin', 'Manager']}>
               <EventDetailsPage />
             </ProtectedRoute>
           }
@@ -83,7 +102,7 @@ export default function App() {
         <Route
           path="/admin/users"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN']}>
+            <ProtectedRoute allowedRoles={['Admin']}>
               <UsersPage />
             </ProtectedRoute>
           }

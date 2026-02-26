@@ -8,26 +8,27 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
-import { loginRequest } from '../services/authService';
+import { registerRequest } from '../services/authService';
 import { useState } from 'react';
 import type { Role } from '../models/Role';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const login = useAuthStore((s) => s.login);
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const res = await loginRequest(username, password);
+      const res = await registerRequest(username, email, password);
 
       login({
         token: res.token,
@@ -37,7 +38,7 @@ export default function LoginPage() {
 
       navigate('/');
     } catch (err) {
-      setError('Invalid username or password');
+      setError('Registration failed');
       console.log(err);
     } finally {
       setLoading(false);
@@ -55,7 +56,7 @@ export default function LoginPage() {
     >
       <Paper sx={{ p: 4, minWidth: 320 }}>
         <Typography variant="h5" gutterBottom>
-          Login
+          Register
         </Typography>
 
         {error && (
@@ -73,6 +74,14 @@ export default function LoginPage() {
         />
 
         <TextField
+          label="Email"
+          fullWidth
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
           label="Password"
           type="password"
           fullWidth
@@ -84,10 +93,14 @@ export default function LoginPage() {
         <Button
           fullWidth
           variant="contained"
-          onClick={handleLogin}
-          disabled={!username || !password || loading}
+          onClick={handleRegister}
+          disabled={!username || !email || !password || loading}
         >
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? 'Creating account...' : 'Register'}
+        </Button>
+
+        <Button fullWidth sx={{ mt: 2 }} onClick={() => navigate('/login')}>
+          Already have an account? Login
         </Button>
       </Paper>
     </Box>

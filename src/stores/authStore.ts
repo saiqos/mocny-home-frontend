@@ -2,25 +2,37 @@ import { create } from "zustand";
 import type { Role } from "../models/Role";
 
 interface AuthState {
+    token: string | null;
+    username: string | null;
     role: Role | null;
-    userId: string | null;
-    login: (userId: string, role: Role) => void;
+
+    login: (data: {
+        token: string;
+        username: string;
+        role: Role;
+    }) => void;
+
     logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-    role: null,
-    userId: null,
+    token: localStorage.getItem("token"),
+    username: localStorage.getItem("username"),
+    role: localStorage.getItem("role") as Role,
 
-    login: (userId, role) =>
-        set({
-            userId,
-            role,
-        }),
+    login: ({ token, username, role }) => {
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", username);
+        localStorage.setItem("role", role);
 
-    logout: () =>
-        set({
-            userId: null,
-            role: null,
-        }),
+        set({ token, username, role });
+    },
+
+    logout: () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("role");
+
+        set({ token: null, username: null, role: null });
+    },
 }));

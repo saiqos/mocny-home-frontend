@@ -81,7 +81,7 @@ export default function MainLayout() {
               sx={{ flexShrink: 0 }}
               onClick={() => {
                 logout();
-                navigate('/login');
+                navigate('/login', { replace: true });
               }}
             >
               Logout
