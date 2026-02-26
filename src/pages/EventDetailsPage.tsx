@@ -41,7 +41,7 @@ export default function EventDetailsPage() {
 
       <Divider sx={{ my: 3 }} />
 
-      {(role === 'ADMIN' || role === 'MANAGER') &&
+      {(role === 'Admin' || role === 'Manager') &&
         event.status !== 'RESOLVED' && (
           <Button
             variant="contained"

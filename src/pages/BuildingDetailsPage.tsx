@@ -60,7 +60,7 @@ export default function BuildingDetailsPage() {
 
       <Typography variant="h5">Floors</Typography>
 
-      {role === 'MANAGER' && (
+      {role === 'Manager' && (
         <>
           <Button
             variant="contained"

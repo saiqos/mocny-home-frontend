@@ -14,16 +14,16 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   const actions = {
-    ADMIN: [
+    Admin: [
       { label: 'User Management', path: '/admin/users' },
       { label: 'Buildings', path: '/buildings' },
       { label: 'Events Log', path: '/events' },
     ],
-    MANAGER: [
+    Manager: [
       { label: 'Buildings', path: '/buildings' },
       { label: 'Events', path: '/events' },
     ],
-    USER: [{ label: 'Buildings', path: '/buildings' }],
+    User: [{ label: 'Buildings', path: '/buildings' }],
   };
 
   const availableActions = role ? actions[role] : [];

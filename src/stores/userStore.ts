@@ -16,7 +16,7 @@ export const useUserStore = create<UserState>((set) => ({
             firstName: "Admin",
             lastName: "User",
             email: "admin@test.com",
-            role: "ADMIN",
+            role: "Admin",
             isActive: true,
         },
         {
@@ -24,7 +24,7 @@ export const useUserStore = create<UserState>((set) => ({
             firstName: "John",
             lastName: "Manager",
             email: "manager@test.com",
-            role: "MANAGER",
+            role: "Manager",
             isActive: true,
         },
         {
@@ -32,7 +32,7 @@ export const useUserStore = create<UserState>((set) => ({
             firstName: "Anna",
             lastName: "User",
             email: "user@test.com",
-            role: "USER",
+            role: "User",
             isActive: true,
         },
     ],

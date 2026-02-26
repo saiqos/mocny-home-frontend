@@ -32,14 +32,14 @@ export default function UsersPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [roleValue, setRoleValue] = useState('USER');
+  const [roleValue, setRoleValue] = useState('User');
 
   const handleClose = () => {
     setOpen(false);
     setFirstName('');
     setLastName('');
     setEmail('');
-    setRoleValue('USER');
+    setRoleValue('User');
   };
 
   const handleSave = () => {
@@ -123,9 +123,9 @@ export default function UsersPage() {
                       minWidth: 50,
                     }}
                   >
-                    <MenuItem value="ADMIN">ADMIN</MenuItem>
-                    <MenuItem value="MANAGER">MANAGER</MenuItem>
-                    <MenuItem value="USER">USER</MenuItem>
+                    <MenuItem value="Admin">ADMIN</MenuItem>
+                    <MenuItem value="Manager">MANAGER</MenuItem>
+                    <MenuItem value="User">USER</MenuItem>
                   </Select>
                 </TableCell>
 
@@ -194,8 +194,8 @@ export default function UsersPage() {
             onChange={(e) => setRoleValue(e.target.value)}
           >
             <MenuItem value="ADMIN">ADMIN</MenuItem>
-            <MenuItem value="MANAGER">MANAGER</MenuItem>
-            <MenuItem value="USER">USER</MenuItem>
+            <MenuItem value="Manager">MANAGER</MenuItem>
+            <MenuItem value="User">USER</MenuItem>
           </Select>
         </DialogContent>
 

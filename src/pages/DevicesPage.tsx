@@ -49,7 +49,7 @@ export default function DevicesPage() {
         Beacons
       </Typography>
 
-      {role !== 'USER' && (
+      {role !== 'User' && (
         <>
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
             <TextField
@@ -98,7 +98,7 @@ export default function DevicesPage() {
                   {beacon.locationDescription}
                 </Typography>
 
-                {role !== 'USER' && (
+                {role !== 'User' && (
                   <Button
                     size="small"
                     color="error"
@@ -120,7 +120,7 @@ export default function DevicesPage() {
         Sensors
       </Typography>
 
-      {role !== 'USER' && (
+      {role !== 'User' && (
         <>
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
             <TextField
@@ -172,7 +172,7 @@ export default function DevicesPage() {
                   {sensor.locationDescription}
                 </Typography>
 
-                {role !== 'USER' && (
+                {role !== 'User' && (
                   <Button
                     size="small"
                     color="error"

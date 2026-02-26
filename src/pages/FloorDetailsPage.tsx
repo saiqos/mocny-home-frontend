@@ -78,7 +78,7 @@ export default function FloorDetailsPage() {
 
       <Typography variant="h5">Rooms</Typography>
 
-      {role === 'MANAGER' && (
+      {role === 'Manager' && (
         <>
           <Button
             variant="contained"
@@ -149,7 +149,7 @@ export default function FloorDetailsPage() {
                 <Typography>Order: {room.orderOnFloor}</Typography>
                 <Typography>{room.description}</Typography>
 
-                {role === 'MANAGER' && (
+                {role === 'Manager' && (
                   <Button
                     size="small"
                     sx={{ mt: 2 }}
