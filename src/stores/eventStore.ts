@@ -3,7 +3,11 @@ import type { Event } from "../models/Event";
 
 interface EventState {
     events: Event[];
+
+    addEvent: (data: Omit<Event, "id">) => void;
+    updateEvent: (id: string, data: Partial<Event>) => void;
     updateStatus: (id: string, status: Event["status"]) => void;
+    deleteEvent: (id: string) => void;
 }
 
 export const useEventStore = create<EventState>((set) => ({
@@ -30,10 +34,33 @@ export const useEventStore = create<EventState>((set) => ({
         },
     ],
 
+    addEvent: (data) =>
+        set((state) => ({
+            events: [
+                ...state.events,
+                {
+                    ...data,
+                    id: crypto.randomUUID(),
+                },
+            ],
+        })),
+
+    updateEvent: (id, data) =>
+        set((state) => ({
+            events: state.events.map((event) =>
+                event.id === id ? { ...event, ...data } : event
+            ),
+        })),
+
     updateStatus: (id, status) =>
         set((state) => ({
-            events: state.events.map((e) =>
-                e.id === id ? { ...e, status } : e
+            events: state.events.map((event) =>
+                event.id === id ? { ...event, status } : event
             ),
+        })),
+
+    deleteEvent: (id) =>
+        set((state) => ({
+            events: state.events.filter((event) => event.id !== id),
         })),
 }));

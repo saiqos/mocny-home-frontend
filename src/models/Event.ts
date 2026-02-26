@@ -1,7 +1,4 @@
-export type EventType =
-    | "SMOKE_DETECTED"
-    | "BUTTON_PRESSED"
-    | "TEMPERATURE_HIGH";
+export type EventType = string;
 
 export type EventStatus = "NEW" | "IN_PROGRESS" | "RESOLVED";
 
