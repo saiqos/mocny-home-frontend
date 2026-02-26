@@ -5,6 +5,7 @@ import {
   Paper,
   TextField,
   Alert,
+  Divider,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
@@ -88,6 +89,18 @@ export default function LoginPage() {
           disabled={!username || !password || loading}
         >
           {loading ? 'Logging in...' : 'Login'}
+        </Button>
+
+        {/* Divider */}
+        <Divider sx={{ my: 3 }} />
+
+        {/* Register Button */}
+        <Button
+          fullWidth
+          variant="outlined"
+          onClick={() => navigate('/register')}
+        >
+          Don’t have an account? Register
         </Button>
       </Paper>
     </Box>
