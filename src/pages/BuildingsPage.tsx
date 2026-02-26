@@ -21,6 +21,8 @@ import { useBuildingStore } from '../stores/buildingStore';
 import { useAuthStore } from '../stores/authStore';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../stores/userStore';
+import { useEffect } from 'react';
+import { getAdminBuildings } from '../services/buildingService';
 
 export default function BuildingsPage() {
   const buildings = useBuildingStore((s) => s.buildings);
@@ -39,6 +41,19 @@ export default function BuildingsPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editAddress, setEditAddress] = useState('');
+
+  useEffect(() => {
+    const fetchBuildings = async () => {
+      try {
+        const data = await getAdminBuildings();
+        console.log('ADMIN BUILDINGS:', data);
+      } catch (err) {
+        console.error('Failed to fetch buildings:', err);
+      }
+    };
+
+    fetchBuildings();
+  }, []);
 
   const handleOpenEdit = (building: any) => {
     setSelectedId(building.id);
