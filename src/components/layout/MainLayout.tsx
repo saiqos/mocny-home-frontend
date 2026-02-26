@@ -19,6 +19,9 @@ const drawerWidth = 240;
 export default function MainLayout() {
   const logout = useAuthStore((s) => s.logout);
   const role = useAuthStore((s) => s.role);
+  const username = useAuthStore((s) => s.username);
+  const token = useAuthStore((s) => s.token);
+
   const navigate = useNavigate();
 
   const theme = useTheme();
@@ -32,18 +35,20 @@ export default function MainLayout() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Sidebar
-        drawerWidth={drawerWidth}
-        isMobile={isMobile}
-        mobileOpen={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-      />
+      {token && (
+        <Sidebar
+          drawerWidth={drawerWidth}
+          isMobile={isMobile}
+          mobileOpen={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+        />
+      )}
 
       <Box component="main" sx={{ flexGrow: 1, minWidth: 0 }}>
         <AppBar
           position="fixed"
           sx={{
-            ...(isMobile
+            ...(isMobile || !token
               ? { width: '100%' }
               : {
                   ml: `${drawerWidth}px`,
@@ -52,7 +57,7 @@ export default function MainLayout() {
           }}
         >
           <Toolbar sx={{ display: 'flex' }}>
-            {isMobile && (
+            {isMobile && token && (
               <IconButton
                 color="inherit"
                 edge="start"
@@ -73,19 +78,31 @@ export default function MainLayout() {
                 whiteSpace: 'nowrap',
               }}
             >
-              BMS — {role}
+              BMS {token && `— ${username} (${role})`}
             </Typography>
 
-            <Button
-              color="inherit"
-              sx={{ flexShrink: 0 }}
-              onClick={() => {
-                logout();
-                navigate('/login', { replace: true });
-              }}
-            >
-              Logout
-            </Button>
+            {!token && (
+              <>
+                <Button color="inherit" onClick={() => navigate('/login')}>
+                  Login
+                </Button>
+                <Button color="inherit" onClick={() => navigate('/register')}>
+                  Register
+                </Button>
+              </>
+            )}
+
+            {token && (
+              <Button
+                color="inherit"
+                onClick={() => {
+                  logout();
+                  navigate('/login', { replace: true });
+                }}
+              >
+                Logout
+              </Button>
+            )}
           </Toolbar>
         </AppBar>
 

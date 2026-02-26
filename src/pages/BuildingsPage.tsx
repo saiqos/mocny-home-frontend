@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Typography,
@@ -6,9 +5,8 @@ import {
   CardContent,
   CardActions,
   Button,
-  Select,
-  MenuItem,
-  Chip,
+  CircularProgress,
+  Alert,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -16,61 +14,34 @@ import {
   TextField,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBuildingStore } from '../stores/buildingStore';
-import { useAuthStore } from '../stores/authStore';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../stores/userStore';
-import { useEffect } from 'react';
-import { getAdminBuildings } from '../services/buildingService';
+import { useAuthStore } from '../stores/authStore';
 
 export default function BuildingsPage() {
   const buildings = useBuildingStore((s) => s.buildings);
-  const updateBuilding = useBuildingStore((s) => s.updateBuilding);
-  const archiveBuilding = useBuildingStore((s) => s.archiveBuilding);
-  const assignManager = useBuildingStore((s) => s.assignManager);
-  const removeManager = useBuildingStore((s) => s.removeManager);
+  const fetchBuildings = useBuildingStore((s) => s.fetchBuildings);
+  const createBuilding = useBuildingStore((s) => s.createBuilding);
+  const loading = useBuildingStore((s) => s.loading);
+  const error = useBuildingStore((s) => s.error);
 
   const role = useAuthStore((s) => s.role);
   const navigate = useNavigate();
 
-  const users = useUserStore((s) => s.users);
-  const managers = users.filter((u) => u.role === 'Manager');
-
-  const [openEdit, setOpenEdit] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [editName, setEditName] = useState('');
-  const [editAddress, setEditAddress] = useState('');
+  const [openCreate, setOpenCreate] = useState(false);
+  const [newName, setNewName] = useState('');
 
   useEffect(() => {
-    const fetchBuildings = async () => {
-      try {
-        const data = await getAdminBuildings();
-        console.log('ADMIN BUILDINGS:', data);
-      } catch (err) {
-        console.error('Failed to fetch buildings:', err);
-      }
-    };
-
     fetchBuildings();
   }, []);
 
-  const handleOpenEdit = (building: any) => {
-    setSelectedId(building.id);
-    setEditName(building.name);
-    setEditAddress(building.address);
-    setOpenEdit(true);
-  };
+  const handleCreate = async () => {
+    if (!newName.trim()) return;
 
-  const handleSave = () => {
-    if (!selectedId) return;
-
-    updateBuilding(selectedId, {
-      name: editName,
-      address: editAddress,
-    });
-
-    setOpenEdit(false);
+    await createBuilding(newName);
+    setNewName('');
+    setOpenCreate(false);
   };
 
   return (
@@ -79,119 +50,76 @@ export default function BuildingsPage() {
         Buildings
       </Typography>
 
-      <Grid container spacing={2}>
-        {buildings.map((building) => (
-          <Grid key={building.id} size={{ xs: 12, md: 6, lg: 4 }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{building.name}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {building.address}
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  {building.description}
-                </Typography>
+      {role === 'Admin' && (
+        <Button
+          variant="contained"
+          sx={{ mb: 3 }}
+          onClick={() => setOpenCreate(true)}
+        >
+          Add Building
+        </Button>
+      )}
 
-                {role === 'Admin' && (
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="subtitle2">Managers:</Typography>
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
 
-                    {building.managerIds.map((managerId) => {
-                      const manager = managers.find((m) => m.id === managerId);
-                      if (!manager) return null;
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
-                      return (
-                        <Chip
-                          key={manager.id}
-                          label={`${manager.firstName} ${manager.lastName}`}
-                          onDelete={() =>
-                            removeManager(building.id, manager.id)
-                          }
-                          sx={{ mr: 1, mt: 1 }}
-                        />
-                      );
-                    })}
+      {!loading && !error && (
+        <Grid container spacing={2}>
+          {buildings.map((building) => (
+            <Grid key={building.id} size={{ xs: 12, md: 6, lg: 4 }}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">{building.name}</Typography>
 
-                    <Select
-                      size="small"
-                      displayEmpty
-                      value=""
-                      sx={{ mt: 2, minWidth: 200 }}
-                      onChange={(e) =>
-                        assignManager(building.id, e.target.value as string)
-                      }
-                    >
-                      <MenuItem value="" disabled>
-                        Assign manager
-                      </MenuItem>
+                  <Typography variant="body2" color="text.secondary">
+                    ID: {building.id}
+                  </Typography>
 
-                      {managers
-                        .filter((m) => !building.managerIds.includes(m.id))
-                        .map((manager) => (
-                          <MenuItem key={manager.id} value={manager.id}>
-                            {manager.firstName} {manager.lastName}
-                          </MenuItem>
-                        ))}
-                    </Select>
-                  </Box>
-                )}
-              </CardContent>
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    Floors: {building.floors?.length ?? 0}
+                  </Typography>
+                </CardContent>
 
-              <CardActions>
-                <Button
-                  size="small"
-                  onClick={() => navigate(`/buildings/${building.id}`)}
-                >
-                  View
-                </Button>
+                <CardActions>
+                  <Button
+                    size="small"
+                    onClick={() => navigate(`/buildings/${building.id}`)}
+                  >
+                    View
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
 
-                {role === 'Admin' && (
-                  <>
-                    <Button
-                      size="small"
-                      onClick={() => handleOpenEdit(building)}
-                    >
-                      Edit
-                    </Button>
+      <Dialog open={openCreate} onClose={() => setOpenCreate(false)}>
+        <DialogTitle>Create Building</DialogTitle>
 
-                    <Button
-                      size="small"
-                      color="error"
-                      onClick={() => archiveBuilding(building.id)}
-                    >
-                      Archive
-                    </Button>
-                  </>
-                )}
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      {/* EDIT MODAL */}
-      <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
-        <DialogTitle>Edit Building</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
-            label="Name"
+            label="Building name"
             margin="normal"
-            value={editName}
-            onChange={(e) => setEditName(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="Address"
-            margin="normal"
-            value={editAddress}
-            onChange={(e) => setEditAddress(e.target.value)}
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
           />
         </DialogContent>
+
         <DialogActions>
-          <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>
-            Save
+          <Button onClick={() => setOpenCreate(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleCreate}>
+            Create
           </Button>
         </DialogActions>
       </Dialog>

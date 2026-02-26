@@ -5,3 +5,10 @@ export async function getAdminBuildings() {
         method: "GET",
     });
 }
+
+export async function createAdminBuilding(name: string) {
+    return api("/api/admin/buildings", {
+        method: "POST",
+        body: JSON.stringify({ name }),
+    });
+}

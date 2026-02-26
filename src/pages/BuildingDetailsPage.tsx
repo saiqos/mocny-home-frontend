@@ -27,7 +27,7 @@ export default function BuildingDetailsPage() {
   const floorsAll = useFloorStore((s) => s.floors);
   const addFloor = useFloorStore((s) => s.addFloor);
 
-  const building = buildings.find((b) => b.id === buildingId);
+  const building = buildings.find((b) => b.id === Number(buildingId));
   const floors = floorsAll.filter((f) => f.buildingId === buildingId);
 
   const [open, setOpen] = useState(false);
@@ -54,7 +54,6 @@ export default function BuildingDetailsPage() {
   return (
     <Box>
       <Typography variant="h4">{building.name}</Typography>
-      <Typography variant="subtitle1">{building.address}</Typography>
 
       <Divider sx={{ my: 3 }} />
 

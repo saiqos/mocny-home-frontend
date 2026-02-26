@@ -1,63 +1,62 @@
 import { create } from "zustand";
-import type { Building } from "../models/Building";
+import {
+    getAdminBuildings,
+    createAdminBuilding,
+} from "../services/buildingService";
+
+export interface Building {
+    id: number;
+    name: string;
+    floors: unknown[];
+}
 
 interface BuildingState {
     buildings: Building[];
-    assignManager: (buildingId: string, userId: string) => void;
-    removeManager: (buildingId: string, userId: string) => void;
-    updateBuilding: (id: string, data: Partial<Building>) => void;
-    archiveBuilding: (id: string) => void;
+    loading: boolean;
+    error: string | null;
+
+    fetchBuildings: () => Promise<void>;
+    createBuilding: (name: string) => Promise<void>;
 }
 
-export const useBuildingStore = create<BuildingState>((set) => ({
-    buildings: [
-        {
-            id: "1",
-            name: "Head Office",
-            address: "Main Street 10",
-            description: "Central administration building",
-            managerIds: ["2"],
-        },
-        {
-            id: "2",
-            name: "Research Center",
-            address: "Innovation Ave 5",
-            description: "R&D building",
-            managerIds: [],
-        },
-    ],
+export const useBuildingStore = create<BuildingState>((set, get) => ({
+    buildings: [],
+    loading: false,
+    error: null,
 
-    assignManager: (buildingId, userId) =>
-        set((state) => ({
-            buildings: state.buildings.map((b) =>
-                b.id === buildingId && !b.managerIds.includes(userId)
-                    ? { ...b, managerIds: [...b.managerIds, userId] }
-                    : b
-            ),
-        })),
+    fetchBuildings: async () => {
+        try {
+            set({ loading: true, error: null });
 
-    removeManager: (buildingId, userId) =>
-        set((state) => ({
-            buildings: state.buildings.map((b) =>
-                b.id === buildingId
-                    ? {
-                        ...b,
-                        managerIds: b.managerIds.filter((id) => id !== userId),
-                    }
-                    : b
-            ),
-        })),
+            const data = await getAdminBuildings();
 
-    updateBuilding: (id, data) =>
-        set((state) => ({
-            buildings: state.buildings.map((b) =>
-                b.id === id ? { ...b, ...data } : b
-            ),
-        })),
+            set({
+                buildings: data as Building[],
+                loading: false,
+            });
+        } catch {
+            set({
+                error: "Failed to fetch buildings",
+                loading: false,
+            });
+        }
+    },
 
-    archiveBuilding: (id) =>
-        set((state) => ({
-            buildings: state.buildings.filter((b) => b.id !== id),
-        })),
+    createBuilding: async (name: string) => {
+        try {
+            set({ loading: true, error: null });
 
+            const newBuilding = await createAdminBuilding(name);
+
+            set({
+                buildings: [...get().buildings, newBuilding] as Building[],
+                loading: false,
+            });
+        } catch {
+            set({
+                error: "Failed to create building",
+                loading: false,
+            });
+        }
+    },
 }));
